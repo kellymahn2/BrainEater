@@ -1,0 +1,542 @@
+using System.Collections;
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+public class Player : MonoBehaviour
+{
+    public static Player Instance {get; private set;} = null;
+    Rigidbody2D Rb;
+
+    Animator Anim;
+
+    [Header("Movement variables")]
+    public float CurrentSpeed;
+    public float RunSpeed = 3.0f;
+    public float MoveSpeed = 2.0f;
+    public float CrouchMoveSpeed = 1.0f;
+    public float JumpForce = 5.0f;
+    public float JumpCutMulitplier = 0.5f;
+    public float NormalGravity;
+    public float FallGravity;
+    public float JumpGravity;
+
+    [Header("Dash variables")]
+    public float DashSpeed = 12.0f;
+    public float DashDuration = 0.15f;
+    public float DashCooldown = 0.5f;
+
+    [SerializeField]
+    private bool IsDashing;
+    private bool CanDash = true;
+
+    public bool AllowMove = true;
+
+    [Header("Debug movement variables")]
+    public Vector2 MoveInput = Vector2.zero;
+    public bool FacingRight = true;
+    [SerializeField]
+    private bool JumpPressed;
+    [SerializeField]
+    private bool JumpReleased;
+    [SerializeField]
+    private bool IsLanding;
+    [SerializeField]
+    private bool IsFalling;
+
+    [Header("Ground checking")]
+    public GroundCheck Check;
+    public LayerMask GroundLayerMask;
+    public bool IsGrounded = true;
+
+    [SerializeField]
+    private int Money = 0;
+
+    [SerializeField] private float Acceleration = 20f;
+    [SerializeField] private float Deceleration = 30f;
+
+    public LayerMask EnemeyLayer;
+
+    private float TargetScale = 1.0f;
+
+    private float ScaleMultiplier = 1.0f;
+
+    public float ScaleSpeed = 10.0f;
+
+    public float DecreaseScaleSpeed = 25.0f;
+
+    public bool Invulnerable = false;
+
+    private bool Respawning = false;
+
+    private bool Crouched = false;
+
+    private bool Running = false;
+
+    public MovingPlatform CurrentPlatform = null;
+
+    [SerializeField]
+    private Vector2 GroundNormal;
+
+    void Start()
+    {
+        if(Instance)
+        {
+            Destroy(gameObject);
+            return;            
+        }
+
+        DontDestroyOnLoad(gameObject);
+
+        Instance = this;
+
+        Rb = GetComponent<Rigidbody2D>();
+
+        Rb.gravityScale = NormalGravity;
+
+        Anim = GetComponent<Animator>();
+
+        Check = GetComponent<GroundCheck>();
+    }
+
+    #region Updates
+    void FixedUpdate()
+    {
+        if(Respawning)
+        {
+            return;
+        }
+
+        if (CurrentPlatform != null && IsGrounded)
+        {
+            Rb.position += CurrentPlatform.MovementDelta;
+        }
+
+        CheckGrounded();
+
+        if(IsDashing)
+        {
+            return;
+        }
+
+        ApplyVariableGravity();
+        if(!IsLanding && AllowMove)
+        {
+            HandleMovement();
+            HandleJump();
+        }
+    }
+    void Update()
+    {
+        if(Respawning)
+        {
+            return;
+        }
+
+        Flip();
+        HandleAnimations();
+        HandleResize();
+    }
+
+    private void HandleResize()
+    {
+        Vector3 startScale = transform.localScale;
+
+        float speed = ScaleSpeed;
+
+        if(ScaleMultiplier == 0.5f)
+        {
+            speed = DecreaseScaleSpeed;
+        }
+
+        float scale = Mathf.MoveTowards(startScale.y, TargetScale * ScaleMultiplier, speed * Time.deltaTime);
+
+        float delta = scale - startScale.y;
+
+        startScale.y = scale;
+
+        //since scales both sides we half and add
+        float deltaHalf = delta * 0.5f;
+
+        transform.position += Vector3.up * deltaHalf;
+        transform.localScale = startScale;
+    }
+
+    private void HandleMovement()
+    {
+        float speed = 0.0f;
+
+        if(Crouched && !Running)
+        {
+            speed = CrouchMoveSpeed;
+        }
+        else if(Running && !Crouched)
+        {
+            speed = RunSpeed;
+        }
+        else
+        {
+            speed = MoveSpeed;
+        }
+
+        if (IsGrounded)
+        {
+            Vector2 groundTangent = new Vector2(
+                GroundNormal.y,
+                -GroundNormal.x
+            ).normalized;
+
+            // Current speed along the slope
+            float currentSlopeSpeed = Vector2.Dot(
+                Rb.linearVelocity,
+                groundTangent
+            );
+
+            float slopeCos = Vector2.Dot(GroundNormal.normalized, Vector2.up);
+
+            float targetSlopeSpeed = speed * MoveInput.x;
+
+            float rate = Mathf.Abs(targetSlopeSpeed) > Mathf.Abs(currentSlopeSpeed)
+                ? Acceleration
+                : Deceleration;
+
+            float newSlopeSpeed = Mathf.MoveTowards(
+                currentSlopeSpeed,
+                targetSlopeSpeed,
+                rate * Time.fixedDeltaTime
+            );
+
+
+            bool sloped = slopeCos < 0.98;
+            bool moving = Mathf.Abs(MoveInput.x) > 0.1f;
+            //we aren't on flat ground, don't apply acceleration
+            if(sloped)
+            {
+                newSlopeSpeed = targetSlopeSpeed;
+            }
+
+            if(!sloped || moving)
+            {
+                Rb.linearVelocity = groundTangent * newSlopeSpeed;
+            }
+        }
+        else
+        {
+            float targetSpeed = speed * MoveInput.x;
+
+            float rate = Mathf.Abs(targetSpeed) > Mathf.Abs(Rb.linearVelocity.x)
+                ? Acceleration
+                : Deceleration;
+
+            float newSpeed = Mathf.MoveTowards(
+                Rb.linearVelocity.x,
+                targetSpeed,
+                rate * Time.fixedDeltaTime
+            );
+
+            Rb.linearVelocity = new Vector2(
+                newSpeed,
+                Rb.linearVelocity.y
+            );
+        }
+    }
+
+    private void HandleJump()
+    {
+        if(IsFalling || Crouched)
+        {
+            JumpReleased = false;
+            JumpPressed = false;
+            return;
+        }
+
+        if(JumpPressed && IsGrounded)
+        {
+            Rb.linearVelocity = new Vector2(Rb.linearVelocity.x, JumpForce);
+            JumpPressed = false;
+            JumpReleased = false;
+
+        }
+        if(JumpReleased)
+        {
+            if (Rb.linearVelocity.y > 0.0f)
+            {
+                Rb.linearVelocity = new Vector2(Rb.linearVelocity.x, Rb.linearVelocity.y * JumpCutMulitplier);
+            }
+
+            JumpReleased = false;
+        }
+    }
+
+    private void HandleAnimations()
+    {
+        bool moving = Mathf.Abs(MoveInput.x) > 0.1f && IsGrounded;
+
+        // Anim.SetBool("IsJumping", Rb.linearVelocity.y > 0.1f);
+        Anim.SetBool("IsGrounded", IsGrounded);
+        // Anim.SetFloat("yVelocity", Rb.linearVelocity.y);
+        Anim.SetBool("IsIdle", !moving);
+        Anim.SetBool("IsWalking", moving && !Running);
+        Anim.SetBool("IsRunning", moving && Running);
+        // Anim.SetBool("IsDashing", IsDashing);
+
+        // IsLanding = Anim.GetCurrentAnimatorStateInfo(0).IsName("Landing");
+        // IsFalling = Anim.GetCurrentAnimatorStateInfo(0).IsName("Falling");
+    }
+
+    #endregion
+    
+    #region Helpers/Getters/Setters
+    void ApplyVariableGravity()
+    {
+        if (Rb.linearVelocity.y < -0.1f)
+        {
+            Rb.gravityScale = FallGravity;
+        }
+        else if(Rb.linearVelocity.y > 0.1f)
+        {
+            Rb.gravityScale = JumpGravity;
+        }
+        else
+        {
+            Rb.gravityScale = NormalGravity;
+        }
+    }
+
+    void Flip()
+    {
+        if (MoveInput.x > 0.1f)
+        {
+            FacingRight = true;
+        }
+        else if (MoveInput.x < -0.1f)
+        {
+            FacingRight = false;
+        }
+
+        transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * (FacingRight ? 1.0f : -1.0f), transform.localScale.y, transform.localScale.z);
+    }
+
+    void CheckGrounded()
+    {
+        IsGrounded = Check.CheckGrounded(GroundLayerMask);
+    }
+
+    public void AddMoney(int amount)
+    {
+        Money += amount;
+    }
+
+    public void Grow()
+    {
+        TargetScale = 1.5f;
+
+        float distance = Mathf.Abs(TargetScale - transform.localScale.y);
+        float timeToTarget = distance / ScaleSpeed;
+
+        StartCoroutine(FlashCharacter(timeToTarget));
+    }
+
+    public void Damage(bool forceKill = false)
+    {
+        if(Invulnerable)
+        {
+            return;
+        }
+
+        if(forceKill || TargetScale == 1.0f)
+        {
+            StartCoroutine(Die());
+            return;
+        }
+        
+        TargetScale = 1.0f;
+
+        StartCoroutine(DamageFlash(2.0f));
+    }
+
+    #endregion
+
+    #region Coroutines
+    //Coroutines
+    private IEnumerator FlashCharacter(float flashDuration)
+    {
+        SpriteRenderer spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+
+        Color orgColor = spriteRenderer.color;
+
+        float flashInterval = 0.1f;
+        float elapsed = 0f;
+
+        while (elapsed < flashDuration)
+        {
+            spriteRenderer.color = orgColor;
+
+            yield return new WaitForSeconds(flashInterval);
+
+            spriteRenderer.color = Color.clear;
+
+            yield return new WaitForSeconds(flashInterval);
+
+            elapsed += flashInterval * 2f;
+        }
+
+        // Restore the sprite.
+        spriteRenderer.color = orgColor;
+    }
+
+    private IEnumerator DamageFlash(float invulnerabilityDuration)
+    {
+        Invulnerable = true;
+
+        Rb.excludeLayers |= EnemeyLayer;
+
+        yield return StartCoroutine(FlashCharacter(invulnerabilityDuration));
+
+        Rb.excludeLayers &= ~EnemeyLayer;
+
+        Invulnerable = false;
+    }
+
+    private IEnumerator Die()
+    {
+        RigidbodyType2D oldType = Rb.bodyType;
+        Rb.bodyType = RigidbodyType2D.Static;
+
+        Respawning = true;
+        
+
+        //move up
+        {
+            float moveAmount = 0.5f;
+            float moveSpeed = 1.0f;
+
+            float nextY = transform.position.y + moveAmount;
+
+            while(transform.position.y != nextY)
+            {
+                float y = Mathf.MoveTowards(transform.position.y, nextY, moveSpeed * Time.deltaTime);
+
+                transform.position = new Vector3(transform.position.x, y, transform.position.z);
+                yield return null;
+            }
+        }
+
+        yield return new WaitForSeconds(1.5f);
+
+        RespawnManager.Respawn();
+
+        Rb.bodyType = oldType;
+        Respawning = false;
+    }
+    #endregion
+
+    #region Events
+    //Events
+    void OnDrawGizmosSelected()
+    {
+        Check.OnDrawGizmosSelected();
+    }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        foreach (ContactPoint2D contact in collision.contacts)
+        {
+            if (contact.normal.y > 0.5f)
+            {
+                GroundNormal = contact.normal;
+                return;
+            }
+        }
+    }
+    
+    void OnMove(InputValue value)
+    {
+        MoveInput = value.Get<Vector2>();
+    }
+
+    void OnJump(InputValue value)
+    {
+        if(value.isPressed)
+        {
+            if(IsGrounded)
+            {
+                JumpPressed = true;
+            }
+            
+            JumpReleased = false;
+        }
+        else
+        {
+            JumpPressed = false;
+            JumpReleased = true;
+        }
+    }
+
+    private IEnumerator Dash()
+    {
+        IsDashing = true;
+        CanDash = false;
+
+        float direction = FacingRight ? 1.0f : -1.0f;
+
+        float gravity = Rb.gravityScale;
+
+        // Disable gravity
+        Rb.gravityScale = 0.0f;
+
+        // Dash
+        Rb.linearVelocity = new Vector2(direction * DashSpeed, 0.0f);
+
+        yield return new WaitForSeconds(DashDuration);
+
+        // End dash
+        IsDashing = false;
+
+        // Restore gravity
+        Rb.gravityScale = gravity;
+
+        // Optional: stop horizontal movement
+        Rb.linearVelocity = new Vector2(0.0f, 0.0f);
+
+        // Cooldown
+        yield return new WaitForSeconds(DashCooldown);
+
+        CanDash = true;
+    }
+
+    void OnDash(InputValue value)
+    {
+        if (value.isPressed && CanDash && !IsDashing && AllowMove)
+        {
+            StartCoroutine(Dash());
+        }
+    }
+
+    void OnCrouch(InputValue value)
+    {
+        if (value.isPressed && !Running)
+        {
+            ScaleMultiplier = 0.5f;
+            Crouched = true;
+            //Rb.linearVelocity = new Vector2(0.0f, Rb.linearVelocityY);
+        }
+        else
+        {
+            ScaleMultiplier = 1.0f;
+            Crouched = false;
+        }
+    }
+
+    void OnRun(InputValue value)
+    {
+        if(value.isPressed && !Crouched)
+        {
+            Running = true;
+        }
+        else
+        {
+            Running = false;
+        }
+    }
+    #endregion
+}
