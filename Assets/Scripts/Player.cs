@@ -165,6 +165,11 @@ public class Player : MonoBehaviour
     {
         float speed = 0.0f;
 
+        if(Crouched)
+        {
+            return;
+        }
+
         if(Crouched && !Running)
         {
             speed = CrouchMoveSpeed;
@@ -267,19 +272,27 @@ public class Player : MonoBehaviour
         }
     }
 
+    void Awake()
+    {
+        QualitySettings.vSyncCount = 1;
+        Application.targetFrameRate = 60;
+    }
     private void HandleAnimations()
     {
-        bool moving = Mathf.Abs(MoveInput.x) > 0.1f && IsGrounded;
+        bool moving = Mathf.Abs(MoveInput.x) > 0.1f;
 
-        // Anim.SetBool("IsJumping", Rb.linearVelocity.y > 0.1f);
-        Anim.SetBool("IsGrounded", IsGrounded);
-        // Anim.SetFloat("yVelocity", Rb.linearVelocity.y);
-        Anim.SetBool("IsIdle", !moving);
-        Anim.SetBool("IsWalking", moving && !Running);
-        Anim.SetBool("IsRunning", moving && Running);
+        Anim.SetBool("IsJumping", !Respawning && Rb.linearVelocity.y > 0.1f);
+        Anim.SetBool("IsGrounded", !Respawning && IsGrounded);
+        Anim.SetFloat("yVelocity", Rb.linearVelocity.y);
+        Anim.SetBool("IsIdle", !Respawning && IsGrounded && !moving && !Crouched);
+        Anim.SetBool("IsWalking", !Respawning && IsGrounded && moving && !Running && !Crouched);
+        Anim.SetBool("IsRunning", !Respawning && IsGrounded && moving && Running && !Crouched);
+
+        Anim.SetBool("IsCrouched", !Respawning && IsGrounded && !moving && Crouched);
         // Anim.SetBool("IsDashing", IsDashing);
 
-        // IsLanding = Anim.GetCurrentAnimatorStateInfo(0).IsName("Landing");
+        IsLanding = Anim.GetCurrentAnimatorStateInfo(0).IsName("PlayerLand");
+
         // IsFalling = Anim.GetCurrentAnimatorStateInfo(0).IsName("Falling");
     }
 
@@ -338,7 +351,7 @@ public class Player : MonoBehaviour
 
     public void Damage(bool forceKill = false)
     {
-        if(Invulnerable)
+        if(Invulnerable || Respawning)
         {
             return;
         }
@@ -425,7 +438,7 @@ public class Player : MonoBehaviour
 
         RespawnManager.Respawn();
 
-        Rb.bodyType = oldType;
+        Rb.bodyType = RigidbodyType2D.Dynamic;
         Respawning = false;
     }
     #endregion
@@ -451,11 +464,24 @@ public class Player : MonoBehaviour
     
     void OnMove(InputValue value)
     {
+        if(Crouched || IsLanding)
+        {
+            MoveInput = Vector2.zero;
+            return;
+        }
+        
         MoveInput = value.Get<Vector2>();
     }
 
     void OnJump(InputValue value)
     {
+        if(IsLanding)
+        {
+            JumpPressed = false;
+            JumpReleased = false;
+            return;
+        }
+
         if(value.isPressed)
         {
             if(IsGrounded)
@@ -514,15 +540,14 @@ public class Player : MonoBehaviour
 
     void OnCrouch(InputValue value)
     {
-        if (value.isPressed && !Running)
+        if (value.isPressed  && IsGrounded && MoveInput.x == 0.0f)
         {
-            ScaleMultiplier = 0.5f;
             Crouched = true;
-            //Rb.linearVelocity = new Vector2(0.0f, Rb.linearVelocityY);
+            Running = false;
+            Rb.linearVelocity = new Vector2(0.0f, Rb.linearVelocityY);
         }
         else
         {
-            ScaleMultiplier = 1.0f;
             Crouched = false;
         }
     }
@@ -531,11 +556,7 @@ public class Player : MonoBehaviour
     {
         if(value.isPressed && !Crouched)
         {
-            Running = true;
-        }
-        else
-        {
-            Running = false;
+            Running = !Running;
         }
     }
     #endregion

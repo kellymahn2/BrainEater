@@ -1,0 +1,8 @@
+D:/UnityTest/BrainEater/.utmp/RelWithDebInfo/136713p1/armeabi-v7a/CMakeFiles/edit_cache.dir
+D:/UnityTest/BrainEater/.utmp/RelWithDebInfo/136713p1/armeabi-v7a/CMakeFiles/rebuild_cache.dir
+D:/UnityTest/BrainEater/.utmp/RelWithDebInfo/136713p1/armeabi-v7a/GameActivity/CMakeFiles/game.dir
+D:/UnityTest/BrainEater/.utmp/RelWithDebInfo/136713p1/armeabi-v7a/GameActivity/CMakeFiles/edit_cache.dir
+D:/UnityTest/BrainEater/.utmp/RelWithDebInfo/136713p1/armeabi-v7a/GameActivity/CMakeFiles/rebuild_cache.dir
+D:/UnityTest/BrainEater/.utmp/RelWithDebInfo/136713p1/armeabi-v7a/FramePacing/CMakeFiles/swappywrapper.dir
+D:/UnityTest/BrainEater/.utmp/RelWithDebInfo/136713p1/armeabi-v7a/FramePacing/CMakeFiles/edit_cache.dir
+D:/UnityTest/BrainEater/.utmp/RelWithDebInfo/136713p1/armeabi-v7a/FramePacing/CMakeFiles/rebuild_cache.dir

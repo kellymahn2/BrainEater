@@ -190,7 +190,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 512
+        y: 1024
         width: 256
         height: 256
       alignment: 0
@@ -212,7 +212,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 256
-        y: 512
+        y: 1024
         width: 256
         height: 256
       alignment: 0
@@ -234,7 +234,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 512
-        y: 512
+        y: 1024
         width: 256
         height: 256
       alignment: 0
@@ -256,7 +256,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 768
-        y: 512
+        y: 1024
         width: 256
         height: 256
       alignment: 0
@@ -278,7 +278,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 1024
-        y: 512
+        y: 1024
         width: 256
         height: 256
       alignment: 0
@@ -299,8 +299,8 @@ TextureImporter:
       name: PlayerWalk_5
       rect:
         serializedVersion: 2
-        x: 1280
-        y: 512
+        x: 0
+        y: 768
         width: 256
         height: 256
       alignment: 0
@@ -321,8 +321,8 @@ TextureImporter:
       name: PlayerWalk_6
       rect:
         serializedVersion: 2
-        x: 1536
-        y: 512
+        x: 256
+        y: 768
         width: 256
         height: 256
       alignment: 0
@@ -343,8 +343,8 @@ TextureImporter:
       name: PlayerWalk_7
       rect:
         serializedVersion: 2
-        x: 0
-        y: 256
+        x: 512
+        y: 768
         width: 256
         height: 256
       alignment: 0
@@ -365,8 +365,8 @@ TextureImporter:
       name: PlayerWalk_8
       rect:
         serializedVersion: 2
-        x: 256
-        y: 256
+        x: 768
+        y: 768
         width: 256
         height: 256
       alignment: 0
@@ -387,8 +387,8 @@ TextureImporter:
       name: PlayerWalk_9
       rect:
         serializedVersion: 2
-        x: 512
-        y: 256
+        x: 1024
+        y: 768
         width: 256
         height: 256
       alignment: 0
@@ -409,8 +409,8 @@ TextureImporter:
       name: PlayerWalk_10
       rect:
         serializedVersion: 2
-        x: 768
-        y: 256
+        x: 0
+        y: 512
         width: 256
         height: 256
       alignment: 0
@@ -431,8 +431,8 @@ TextureImporter:
       name: PlayerWalk_11
       rect:
         serializedVersion: 2
-        x: 1024
-        y: 256
+        x: 256
+        y: 512
         width: 256
         height: 256
       alignment: 0
@@ -453,8 +453,8 @@ TextureImporter:
       name: PlayerWalk_12
       rect:
         serializedVersion: 2
-        x: 1280
-        y: 256
+        x: 512
+        y: 512
         width: 256
         height: 256
       alignment: 0
@@ -475,8 +475,8 @@ TextureImporter:
       name: PlayerWalk_13
       rect:
         serializedVersion: 2
-        x: 1536
-        y: 256
+        x: 768
+        y: 512
         width: 256
         height: 256
       alignment: 0
@@ -497,8 +497,8 @@ TextureImporter:
       name: PlayerWalk_14
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
+        x: 1024
+        y: 512
         width: 256
         height: 256
       alignment: 0
@@ -519,8 +519,8 @@ TextureImporter:
       name: PlayerWalk_15
       rect:
         serializedVersion: 2
-        x: 256
-        y: 0
+        x: 0
+        y: 256
         width: 256
         height: 256
       alignment: 0
@@ -541,8 +541,8 @@ TextureImporter:
       name: PlayerWalk_16
       rect:
         serializedVersion: 2
-        x: 512
-        y: 0
+        x: 256
+        y: 256
         width: 256
         height: 256
       alignment: 0
@@ -563,8 +563,8 @@ TextureImporter:
       name: PlayerWalk_17
       rect:
         serializedVersion: 2
-        x: 768
-        y: 0
+        x: 512
+        y: 256
         width: 256
         height: 256
       alignment: 0
@@ -585,8 +585,8 @@ TextureImporter:
       name: PlayerWalk_18
       rect:
         serializedVersion: 2
-        x: 1024
-        y: 0
+        x: 768
+        y: 256
         width: 256
         height: 256
       alignment: 0
@@ -607,8 +607,8 @@ TextureImporter:
       name: PlayerWalk_19
       rect:
         serializedVersion: 2
-        x: 1280
-        y: 0
+        x: 1024
+        y: 256
         width: 256
         height: 256
       alignment: 0
@@ -629,7 +629,7 @@ TextureImporter:
       name: PlayerWalk_20
       rect:
         serializedVersion: 2
-        x: 1536
+        x: 0
         y: 0
         width: 256
         height: 256
