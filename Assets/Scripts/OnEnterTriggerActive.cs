@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class OnEnterTriggerActive : MonoBehaviour
@@ -19,7 +20,10 @@ public class OnEnterTriggerActive : MonoBehaviour
     {
         foreach(GameObject obj in Objects)
         {
-            obj.SetActive(active);
+            if(!obj.IsDestroyed())
+            {
+                obj.SetActive(active);
+            }
         }
     }
 

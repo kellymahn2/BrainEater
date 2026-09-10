@@ -1,10 +1,14 @@
 using System.Collections;
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
-    public static Player Instance {get; private set;} = null;
+
+    public CinemachinePositionComposer CPC;
+
     Rigidbody2D Rb;
 
     Animator Anim;
@@ -72,23 +76,29 @@ public class Player : MonoBehaviour
 
     private bool Running = false;
 
-    public MovingPlatform CurrentPlatform = null;
+    private bool Shooting = false;
+
+    public Transform ShootSpot;
+
+    public GameObject BulletPrefab;
 
     [SerializeField]
     private Vector2 GroundNormal;
 
+    [Min(0.0f)] public float LookUpOffset = 2.0f;
+
+    public float LookUpTime = 0.5f;
+
+    private Coroutine LookUpCoroutine = null;
+
+    [Min(0.0f)] public float LookDownOffset = 2.0f;
+
+    public float LookDownTime = 0.5f;
+
+    private Coroutine LookDownCoroutine = null;
+
     void Start()
     {
-        if(Instance)
-        {
-            Destroy(gameObject);
-            return;            
-        }
-
-        DontDestroyOnLoad(gameObject);
-
-        Instance = this;
-
         Rb = GetComponent<Rigidbody2D>();
 
         Rb.gravityScale = NormalGravity;
@@ -106,10 +116,10 @@ public class Player : MonoBehaviour
             return;
         }
 
-        if (CurrentPlatform != null && IsGrounded)
-        {
-            Rb.position += CurrentPlatform.MovementDelta;
-        }
+        // if (CurrentPlatform != null && IsGrounded)
+        // {
+        //     Rb.position += CurrentPlatform.MovementDelta;
+        // }
 
         CheckGrounded();
 
@@ -121,8 +131,11 @@ public class Player : MonoBehaviour
         ApplyVariableGravity();
         if(!IsLanding && AllowMove)
         {
-            HandleMovement();
-            HandleJump();
+            if(!Crouched && !Shooting)
+            {
+                HandleMovement();
+                HandleJump();
+            }
         }
     }
     void Update()
@@ -165,16 +178,7 @@ public class Player : MonoBehaviour
     {
         float speed = 0.0f;
 
-        if(Crouched)
-        {
-            return;
-        }
-
-        if(Crouched && !Running)
-        {
-            speed = CrouchMoveSpeed;
-        }
-        else if(Running && !Crouched)
+        if(Running)
         {
             speed = RunSpeed;
         }
@@ -277,19 +281,27 @@ public class Player : MonoBehaviour
         QualitySettings.vSyncCount = 1;
         Application.targetFrameRate = 60;
     }
+    private void SetAnimationState(string name, bool state)
+    {
+        Anim.SetBool(name, !Respawning && state);
+    }
     private void HandleAnimations()
     {
-        bool moving = Mathf.Abs(MoveInput.x) > 0.1f;
+        bool moving = Mathf.Abs(MoveInput.x) > 0.1f && IsGrounded && !Crouched && !Shooting;
 
-        Anim.SetBool("IsJumping", !Respawning && Rb.linearVelocity.y > 0.1f);
-        Anim.SetBool("IsGrounded", !Respawning && IsGrounded);
-        Anim.SetFloat("yVelocity", Rb.linearVelocity.y);
-        Anim.SetBool("IsIdle", !Respawning && IsGrounded && !moving && !Crouched);
-        Anim.SetBool("IsWalking", !Respawning && IsGrounded && moving && !Running && !Crouched);
-        Anim.SetBool("IsRunning", !Respawning && IsGrounded && moving && Running && !Crouched);
 
-        Anim.SetBool("IsCrouched", !Respawning && IsGrounded && !moving && Crouched);
+        {
+            SetAnimationState("IsJumping", Rb.linearVelocity.y > 0.1f);
+            SetAnimationState("IsGrounded", IsGrounded);
+            SetAnimationState("IsIdle", !Shooting && IsGrounded && !moving && !Crouched);
+            SetAnimationState("IsWalking", moving && !Running);
+            SetAnimationState("IsRunning", moving && Running);
+            SetAnimationState("IsCrouched", IsGrounded && Crouched);
+            SetAnimationState("IsShooting", Shooting);
+        }
+
         // Anim.SetBool("IsDashing", IsDashing);
+        Anim.SetFloat("yVelocity", Rb.linearVelocity.y);
 
         IsLanding = Anim.GetCurrentAnimatorStateInfo(0).IsName("PlayerLand");
 
@@ -367,6 +379,16 @@ public class Player : MonoBehaviour
         StartCoroutine(DamageFlash(2.0f));
     }
 
+    public void Shoot()
+    {
+        Instantiate(BulletPrefab, ShootSpot.position, ShootSpot.rotation, null).GetComponent<Bullet>().SetDirection(FacingRight);
+    } 
+
+    public void ShootAvailable()
+    {
+        Shooting = false;
+    }
+
     #endregion
 
     #region Coroutines
@@ -417,6 +439,11 @@ public class Player : MonoBehaviour
 
         Respawning = true;
         
+        AsyncOperation op = SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().name);
+
+        op.allowSceneActivation = false;
+
+        float t = Time.time;
 
         //move up
         {
@@ -434,13 +461,39 @@ public class Player : MonoBehaviour
             }
         }
 
-        yield return new WaitForSeconds(1.5f);
 
-        RespawnManager.Respawn();
+        while(op.progress < 0.9f)
+        {
+            yield return null;
+        }
+
+        float waitTime = Time.time - t;
+
+        if(waitTime < 2)
+        {
+            yield return new WaitForSeconds(2.0f - waitTime);
+        }
 
         Rb.bodyType = RigidbodyType2D.Dynamic;
         Respawning = false;
+
+        op.allowSceneActivation = true;
     }
+    
+    private IEnumerator MoveCameraUp()
+    {
+        yield return new WaitForSeconds(LookUpTime);
+
+        CPC.TargetOffset.y = LookUpOffset;
+    }
+
+    private IEnumerator MoveCameraDown()
+    {
+        yield return new WaitForSeconds(LookDownTime);
+
+        CPC.TargetOffset.y = -LookDownOffset;
+    }
+
     #endregion
 
     #region Events
@@ -461,21 +514,59 @@ public class Player : MonoBehaviour
             }
         }
     }
-    
+
     void OnMove(InputValue value)
     {
-        if(Crouched || IsLanding)
+        if(IsLanding)
         {
             MoveInput = Vector2.zero;
             return;
         }
         
         MoveInput = value.Get<Vector2>();
+
+        if(MoveInput.x != 0.0f)
+        {
+            MoveInput.y = 0.0f;
+        }
+
+        if(MoveInput.y > 0.0f && LookUpCoroutine == null)
+        {
+            if(LookDownCoroutine != null)
+            {
+                StopCoroutine(LookDownCoroutine);
+                LookDownCoroutine = null;
+            }
+            LookUpCoroutine = StartCoroutine(MoveCameraUp());
+        }
+        else if(MoveInput.y < 0.0f && LookDownCoroutine == null)
+        {
+            if(LookUpCoroutine != null)
+            {
+                StopCoroutine(LookUpCoroutine);
+                LookUpCoroutine = null;
+            }
+            LookDownCoroutine = StartCoroutine(MoveCameraDown());
+        }
+        else if(MoveInput.y == 0.0f)
+        {
+            CPC.TargetOffset.y = 0.0f;
+            if(LookUpCoroutine != null)
+            {
+                StopCoroutine(LookUpCoroutine);
+                LookUpCoroutine = null;
+            }
+            else if(LookDownCoroutine != null)
+            {
+                StopCoroutine(LookDownCoroutine);
+                LookDownCoroutine = null;
+            }
+        }
     }
 
     void OnJump(InputValue value)
     {
-        if(IsLanding)
+        if(IsLanding || Shooting || Crouched)
         {
             JumpPressed = false;
             JumpReleased = false;
@@ -540,24 +631,35 @@ public class Player : MonoBehaviour
 
     void OnCrouch(InputValue value)
     {
-        if (value.isPressed  && IsGrounded && MoveInput.x == 0.0f)
+        if(Shooting)
         {
-            Crouched = true;
-            Running = false;
-            Rb.linearVelocity = new Vector2(0.0f, Rb.linearVelocityY);
+            return;
         }
-        else
+
+        if (value.isPressed  && IsGrounded)
         {
-            Crouched = false;
+            Crouched = !Crouched;
+            Rb.linearVelocity = new Vector2(0.0f, Rb.linearVelocityY);
         }
     }
 
     void OnRun(InputValue value)
     {
-        if(value.isPressed && !Crouched)
+        if(value.isPressed)
         {
             Running = !Running;
         }
     }
+    
+    void OnShoot(InputValue value)
+    {
+        if(value.isPressed && IsGrounded)
+        {
+            Rb.linearVelocity = new Vector2(0.0f, Rb.linearVelocityY);
+            Shooting = true;
+            Crouched = false;
+        }
+    }
+
     #endregion
 }

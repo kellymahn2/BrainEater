@@ -6,7 +6,7 @@ public class DeathTrigger : MonoBehaviour
     {
         if(collider.gameObject.CompareTag("Player"))
         {
-            Player.Instance.Damage(true);
+            collider.GetComponent<Player>().Damage(true);
         }
     }
 }

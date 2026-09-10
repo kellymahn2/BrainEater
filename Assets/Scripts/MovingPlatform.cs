@@ -21,7 +21,7 @@ public class MovingPlatform : MonoBehaviour
             Bounds[i] += (Vector2)transform.position;
         }
 
-        Rb = GetComponent<Rigidbody2D>();
+        // Rb = GetComponent<Rigidbody2D>();
     }
 
     void Update()

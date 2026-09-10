@@ -1,0 +1,363 @@
+fileFormatVersion: 2
+guid: 8990a5b7562dd8e4d9d541367d02aacc
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 8730828637628634435
+    second: BrainBullet.Explode_0
+  - first:
+      213: 7201284728095898835
+    second: BrainBullet.Explode_1
+  - first:
+      213: -3656787776812207935
+    second: BrainBullet.Explode_2
+  - first:
+      213: 4414109085620733132
+    second: BrainBullet.Explode_3
+  - first:
+      213: 6138943656252616019
+    second: BrainBullet.Explode_4
+  - first:
+      213: -5705817665158978839
+    second: BrainBullet.Explode_5
+  - first:
+      213: 8535693705283325858
+    second: BrainBullet.Explode_6
+  - first:
+      213: 5568733631535730718
+    second: BrainBullet.Explode_7
+  - first:
+      213: -959038150489550035
+    second: BrainBullet.Explode_8
+  - first:
+      213: 1140338906030244803
+    second: BrainBullet.Explode_9
+  - first:
+      213: 4415387389980634954
+    second: BrainBullet.Explode_10
+  - first:
+      213: 158702098563369875
+    second: BrainBullet.Explode_11
+  - first:
+      213: 496449161400452204
+    second: BrainBullet.Explode_12
+  - first:
+      213: -6204337686383576112
+    second: BrainBullet.Explode_13
+  - first:
+      213: -8985824408492035373
+    second: BrainBullet.Explode_14
+  - first:
+      213: 4909938698588575574
+    second: BrainBullet.Explode_15
+  - first:
+      213: -2242589917025844858
+    second: BrainBullet.Explode_16
+  - first:
+      213: 6472418143256714481
+    second: BrainBullet.Explode_17
+  - first:
+      213: 6675634411421638563
+    second: BrainBullet.Explode_18
+  - first:
+      213: -543001122332031446
+    second: BrainBullet.Explode_19
+  - first:
+      213: -9029609534292710908
+    second: BrainBullet.Explode_20
+  - first:
+      213: 2948624116611603031
+    second: BrainBullet.Explode_21
+  - first:
+      213: -8456827269939441479
+    second: BrainBullet.Explode_22
+  - first:
+      213: -8965913600302173851
+    second: BrainBullet.Explode_23
+  - first:
+      213: 7944775657219872653
+    second: BrainBullet.Explode_24
+  - first:
+      213: -5010021937027399971
+    second: BrainBullet.Explode_25
+  - first:
+      213: -2272930296664780828
+    second: BrainBullet.Explode_26
+  - first:
+      213: -2313986939166698018
+    second: BrainBullet.Explode_27
+  - first:
+      213: -4282042115549139897
+    second: BrainBullet.Explode_28
+  - first:
+      213: 2940574503573271774
+    second: BrainBullet.Explode_29
+  - first:
+      213: 424590465128496133
+    second: BrainBullet.Explode_30
+  - first:
+      213: -7988095786212976480
+    second: BrainBullet.Explode_31
+  - first:
+      213: 8191968249580008226
+    second: BrainBullet.Explode_32
+  - first:
+      213: 7792897639837124027
+    second: BrainBullet.Explode_33
+  - first:
+      213: -2744307528238827232
+    second: BrainBullet.Explode_34
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 256
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: 4
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: BrainBullet.Explode_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 26bb975599301d742bacba49e3b7ecad
+      internalID: 8730828637628634435
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BrainBullet.Explode_1
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2936377ef3f9c194d99c5db0595d6365
+      internalID: 7201284728095898835
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BrainBullet.Explode_2
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c29ca692b3e14f041bf270c7534eb90f
+      internalID: -3656787776812207935
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BrainBullet.Explode_3
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 55ee50f5fe9742e4daedcb2171d03a8d
+      internalID: 4414109085620733132
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BrainBullet.Explode_4
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3b2eab97fecc72845954c68d94e78aad
+      internalID: 6138943656252616019
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: f0af6edddcbc05c49a53d20e4d24565d
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      BrainBullet.Explode_0: 8730828637628634435
+      BrainBullet.Explode_1: 7201284728095898835
+      BrainBullet.Explode_2: -3656787776812207935
+      BrainBullet.Explode_3: 4414109085620733132
+      BrainBullet.Explode_4: 6138943656252616019
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
