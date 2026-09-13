@@ -1,16 +1,98 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum EaseType
+{
+    Linear,
+    EaseInQuad,
+    EaseOutQuad,
+    EaseInOutQuad,
+    EaseInCubic,
+    EaseOutCubic,
+    EaseInOutCubic,
+    EaseInSine,
+    EaseOutSine,
+    EaseInOutSine,
+    SmoothStep,
+    SmootherStep,
+}
+
 public class MovingPlatform : MonoBehaviour
 {
-    public List<Vector2> Bounds;
-
-    public int NextBound = 0;
+    [Tooltip("The function used for interpolating.")]
+    public EaseType Ease = EaseType.Linear;
+    [Tooltip("The speed of interpolation.")]
     public float Speed = 10.0f;
+    [Tooltip("Amount of time to wait before starting to move to the next Position.")]
+    public float WaitTime = 0.0f;
+    [Tooltip("Ping pong instead of looping.")]
+    public bool TraceBack = true;
 
-    private Rigidbody2D Rb;
+    [Tooltip("Positions to move to, Specified in deltas from the current position.")]
+    public List<Vector2> Bounds;
+    public int NextBound = 0;
+    private int LastOffset = -1;
 
-    public Vector2 MovementDelta { get; private set; }
+    private IEnumerator MovePlatform()
+    {
+        float t = 0.0f;
+
+        while(true)
+        {
+            if(t >= 1.0f)
+            {
+                if(TraceBack)
+                {
+                    if(NextBound == 0)
+                    {
+                        NextBound = 1;
+                        LastOffset = -1;
+                    }
+                    else if(NextBound == Bounds.Count - 1)
+                    {
+                        NextBound = Bounds.Count - 2;
+                        LastOffset = 1;
+                    }
+                    else
+                    {
+                        NextBound -= LastOffset;
+                    }
+                }
+                else
+                {
+                    NextBound = (NextBound + 1) % (Bounds.Count);
+                }
+
+                t = 0.0f;
+
+                if(WaitTime > 0.0f)
+                {
+                    yield return new WaitForSeconds(WaitTime);
+                }
+            }
+
+            float len = (Vector2.Distance(Bounds[NextBound + LastOffset], Bounds[NextBound]));
+
+            float step = len > 0.0001f ? (Speed * Time.deltaTime) / len : 1.0f;
+
+            t += step;
+
+            float mixVal = ApplyEase(t);
+
+            int fromIndex = NextBound + LastOffset;
+            
+            if(fromIndex < 0)
+            {
+                fromIndex = Bounds.Count - 1;    
+            }
+
+            int toIndex = NextBound;
+
+            transform.position = Vector2.Lerp(Bounds[fromIndex], Bounds[toIndex], mixVal);
+            yield return null;
+        }
+    }
 
     void Start()
     {
@@ -21,27 +103,44 @@ public class MovingPlatform : MonoBehaviour
             Bounds[i] += (Vector2)transform.position;
         }
 
-        // Rb = GetComponent<Rigidbody2D>();
+        NextBound = 1;
+
+        if(Bounds.Count > 1)
+        {
+            StartCoroutine(MovePlatform());
+        }
+        else
+        {
+            Debug.LogWarning($"{name}: Moving platform needs at least one position to move to");
+        }
     }
 
-    void Update()
+    private float ApplyEase(float t)
     {
-        Vector2 currentPos = transform.position;
-
-        if (Bounds[NextBound] == currentPos)
+        t = Mathf.Clamp01(t);
+        switch (Ease)
         {
-            NextBound = (NextBound + 1) % Bounds.Count;
+            case EaseType.EaseInQuad:     return t * t;
+            case EaseType.EaseOutQuad:    return 1f - (1f - t) * (1f - t);
+            case EaseType.EaseInOutQuad:  return t < 0.5f
+                ? 2f * t * t
+                : 1f - Mathf.Pow(-2f * t + 2f, 2f) / 2f;
+
+            case EaseType.EaseInCubic:    return t * t * t;
+            case EaseType.EaseOutCubic:   return 1f - Mathf.Pow(1f - t, 3f);
+            case EaseType.EaseInOutCubic: return t < 0.5f
+                ? 4f * t * t * t
+                : 1f - Mathf.Pow(-2f * t + 2f, 3f) / 2f;
+
+            case EaseType.EaseInSine:     return 1f - Mathf.Cos(t * Mathf.PI * 0.5f);
+            case EaseType.EaseOutSine:    return Mathf.Sin(t * Mathf.PI * 0.5f);
+            case EaseType.EaseInOutSine:  return -(Mathf.Cos(Mathf.PI * t) - 1f) / 2f;
+
+            case EaseType.SmoothStep:     return t * t * (3f - 2f * t);
+            case EaseType.SmootherStep:   return t * t * t * (t * (t * 6f - 15f) + 10f);
+
+            default:                      return t;
         }
-
-        Vector2 nextPos = Vector2.MoveTowards(
-            currentPos,
-            Bounds[NextBound],
-            Speed * Time.deltaTime
-        );
-
-        MovementDelta = nextPos - currentPos;
-
-        transform.position = nextPos;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

@@ -24,7 +24,7 @@ public class Player : MonoBehaviour
     public float FallGravity;
     public float JumpGravity;
 
-    public float FallSpeedMax = 5.0f;
+    [Min(0.0f)] public float FallSpeedMax = 5.0f;
 
     [Header("Dash variables")]
     public float DashSpeed = 12.0f;
@@ -142,7 +142,7 @@ public class Player : MonoBehaviour
             }
         }
 
-        Rb.linearVelocity = new Vector2(Rb.linearVelocity.x, Mathf.Clamp(Rb.linearVelocity.y, 0.0f, FallSpeedMax));
+        Rb.linearVelocity = new Vector2(Rb.linearVelocity.x, Mathf.Max(Rb.linearVelocity.y, -FallSpeedMax));
     }
     void Update()
     {
