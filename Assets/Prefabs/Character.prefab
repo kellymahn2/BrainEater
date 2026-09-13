@@ -195,7 +195,7 @@ Transform:
   m_GameObject: {fileID: 3039251262871053266}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.73, z: 0}
+  m_LocalPosition: {x: -0.007, y: -0.73, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -360,7 +360,7 @@ Transform:
   m_GameObject: {fileID: 4326315980059034414}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -0.08, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -470,6 +470,7 @@ MonoBehaviour:
   NormalGravity: 4
   FallGravity: 5
   JumpGravity: 7
+  FallSpeedMax: 5
   DashSpeed: 12
   DashDuration: 0.15
   DashCooldown: 0.5
@@ -515,8 +516,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GroundCheckTransform: {fileID: 4655227163060277719}
-  BoxSize: {x: 0.36, y: 0.15}
-  CastDistance: 0.06
+  BoxSize: {x: 0.45, y: 0.15}
+  CastDistance: 0.07
   GroundedColor: {r: 0, g: 1, b: 0, a: 1}
   Color: {r: 1, g: 0, b: 0, a: 1}
 --- !u!61 &1845702960647861652
@@ -553,7 +554,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.00939399, y: -0.08767745}
+  m_Offset: {x: -0.006814301, y: -0.08767748}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -563,7 +564,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.4426223, y: 1.2755575}
+  m_Size: {x: 0.45225847, y: 1.2755575}
   m_EdgeRadius: 0
 --- !u!1 &4446564422383032994
 GameObject:
