@@ -1,10 +1,11 @@
 using UnityEngine;
 
-public class Collectible : MonoBehaviour
+public class Coin : MonoBehaviour
 {
     public int Value = 1;
 
-    public void OnTriggerEnter2D(Collider2D other)
+
+   public void OnTriggerEnter2D(Collider2D other)
     {
         if(other.gameObject.CompareTag("Player"))
         {
@@ -15,4 +16,5 @@ public class Collectible : MonoBehaviour
             Destroy(gameObject);
         }
     }   
+
 }

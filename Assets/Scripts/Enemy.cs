@@ -34,8 +34,6 @@ public class Enemy : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-
-        GetComponentsInChildren<Hurtbox>()[0].OnHurt.AddListener(Hit);
     }
 
     private void FixedUpdate()
@@ -135,12 +133,6 @@ public class Enemy : MonoBehaviour
         {
             DamagePlayer(player);
         }
-    }
-
-    public void Hit(Hitbox hitbox)
-    {
-        dead = true;
-        Die();
     }
 
 

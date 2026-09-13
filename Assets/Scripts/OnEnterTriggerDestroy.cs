@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class OnEnterTrigger : MonoBehaviour
@@ -13,7 +12,7 @@ public class OnEnterTrigger : MonoBehaviour
     {
         foreach(GameObject obj in Objects)
         {
-            if(collider.gameObject.Equals(obj) && !obj.gameObject.IsDestroyed())
+            if(collider.gameObject.Equals(obj))
             {
                 Destroy(obj, Time);
                 

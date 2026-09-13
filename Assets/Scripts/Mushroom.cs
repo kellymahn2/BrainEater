@@ -6,7 +6,7 @@ public class Mushroom : MonoBehaviour
     private bool Active = false;
 
     public float MoveSpeed = 1.2f;
-    public static Vector2 LocalTarget = 1.2f * Vector2.up;
+    private static Vector2 LocalTarget = 1.0f * Vector2.up;
 
     public void OnTriggerEnter2D(Collider2D collision)
     {

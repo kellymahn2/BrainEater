@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 1177330956974959545}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: 25.72, y: 0.37000012, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -70,7 +70,7 @@ Camera:
   far clip plane: 1000
   field of view: 40
   orthographic: 1
-  orthographic size: 4.75
+  orthographic size: 3.54
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -179,7 +179,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4655227163060277719}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: GroundCheck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -195,7 +195,7 @@ Transform:
   m_GameObject: {fileID: 3039251262871053266}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.73, z: 0}
+  m_LocalPosition: {x: 0, y: -0.82, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -229,7 +229,7 @@ Transform:
   m_GameObject: {fileID: 4144213699501301367}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: 25.72, y: 0.37000012, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -260,7 +260,7 @@ MonoBehaviour:
     CustomLookAtTarget: 0
   Lens:
     FieldOfView: 40
-    OrthographicSize: 4.75
+    OrthographicSize: 3.54
     NearClipPlane: 0.3
     FarClipPlane: 1000
     Dutch: 0
@@ -296,7 +296,7 @@ MonoBehaviour:
     ScreenPosition: {x: 0, y: 0}
     DeadZone:
       Enabled: 1
-      Size: {x: 0.2, y: 0}
+      Size: {x: 0.2, y: 0.2}
     HardLimits:
       Enabled: 0
       Size: {x: 0.8, y: 0.8}
@@ -344,7 +344,7 @@ GameObject:
   - component: {fileID: 1100790352354515411}
   - component: {fileID: 458549002616859131}
   - component: {fileID: 6070376884356828872}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -360,13 +360,12 @@ Transform:
   m_GameObject: {fileID: 4326315980059034414}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 25.72, y: 0.37, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2502650222690896655}
   - {fileID: 4655227163060277719}
-  - {fileID: 4694140741708443441}
   m_Father: {fileID: 2126689825124349613}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &4368965456848781542
@@ -430,8 +429,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: -0.04928553}
-  m_Size: {x: 0.5, y: 1.3245494}
+  m_Offset: {x: 0, y: -0.10650402}
+  m_Size: {x: 0.5, y: 1.4389864}
   m_Direction: 0
 --- !u!114 &5039797800566797965
 MonoBehaviour:
@@ -497,7 +496,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b52d6d3cd33d82247ac3a4ec8f3e78ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CPC: {fileID: 2143693512427055112}
   CurrentSpeed: 0
   RunSpeed: 7.5
   MoveSpeed: 5
@@ -532,13 +530,8 @@ MonoBehaviour:
   ScaleSpeed: 10
   DecreaseScaleSpeed: 25
   Invulnerable: 0
-  ShootSpot: {fileID: 4694140741708443441}
-  BulletPrefab: {fileID: 2352196631384979023, guid: d24361737ecfe1d479b569ef87e65116, type: 3}
+  CurrentPlatform: {fileID: 0}
   GroundNormal: {x: 0, y: 0}
-  LookUpOffset: 3.5
-  LookUpTime: 0.5
-  LookDownOffset: 3
-  LookDownTime: 0.5
 --- !u!114 &6070376884356828872
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -634,37 +627,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 98.121025, y: 63.73722}
   m_EdgeRadius: 0
---- !u!1 &5541521969236154746
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4694140741708443441}
-  m_Layer: 7
-  m_Name: ShootSpot
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &4694140741708443441
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5541521969236154746}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.545, y: -0.218, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 3112505450081123377}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6546023556430419631
 GameObject:
   m_ObjectHideFlags: 0
@@ -675,7 +637,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2502650222690896655}
   - component: {fileID: 3126955500327234584}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
