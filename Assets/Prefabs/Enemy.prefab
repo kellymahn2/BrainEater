@@ -115,7 +115,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &4793929850834594194
@@ -470,6 +470,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   stompBounceForce: 8
+  Squashed: {fileID: -8626430948324366259, guid: 79cda75c0855aa940809840d37d567d2, type: 3}
   PlayerLayer:
     serializedVersion: 2
     m_Bits: 0

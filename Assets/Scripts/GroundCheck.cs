@@ -23,7 +23,7 @@ public class GroundCheck : MonoBehaviour
 
         if(Hit.collider != null)
         {
-            if(Hit.collider.IsTouching(Collider) && Mathf.Abs(Vector2.Dot(Hit.normal, Vector2.right)) < 0.9f)
+            if(Hit.collider.IsTouching(Collider))
             {
                 return IsGrounded = true;
             }

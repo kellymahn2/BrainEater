@@ -1,3 +1,5 @@
+using System.Collections;
+using TMPro;
 using UnityEditor;
 using UnityEngine;
 
@@ -16,10 +18,15 @@ public class Enemy : MonoBehaviour
     [Header("Combat")]
     [SerializeField] private float stompBounceForce = 8f;
 
+    private Animator Anim;
 
     public LayerMask PlayerLayer;
 
     private Rigidbody2D rb;
+
+    private bool IsSqaushed = false;
+    private bool IsExploding = false;
+
     public bool facingRight
     {
         get
@@ -34,6 +41,7 @@ public class Enemy : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        Anim = GetComponent<Animator>();
 
         GetComponentsInChildren<Hurtbox>()[0].OnHurt.AddListener(Hit);
     }
@@ -45,6 +53,13 @@ public class Enemy : MonoBehaviour
 
         Move();
         CheckForTurn();
+    }
+
+    void Update()
+    {
+        Anim.SetBool("IsSquashed", IsSqaushed);
+        Anim.SetBool("IsExploding", IsExploding);
+        Anim.SetBool("IsIdle", !IsSqaushed && !IsExploding);
     }
 
     private void Move()
@@ -68,7 +83,7 @@ public class Enemy : MonoBehaviour
             groundLayer
         );
         // Check for wall
-        IsWall = v && v.collider.gameObject.CompareTag("Enemy");
+        IsWall = v;
 
         // Check for ground in front of us
         IsGrounded = Physics2D.OverlapCircle(
@@ -139,8 +154,9 @@ public class Enemy : MonoBehaviour
 
     public void Hit(Hitbox hitbox)
     {
-        dead = true;
-        Die();
+        IsExploding = true;
+        IsSqaushed = false;
+        StartCoroutine(Die());
     }
 
 
@@ -158,7 +174,9 @@ public class Enemy : MonoBehaviour
             );
         }
 
-        Die();
+        IsSqaushed = true;
+        IsExploding = false;
+        StartCoroutine(Die());
     }
 
     private void DamagePlayer(GameObject playerObj)
@@ -174,7 +192,7 @@ public class Enemy : MonoBehaviour
         //}
     }
 
-    private void Die()
+    private IEnumerator Die()
     {
         // Stop movement.
         rb.linearVelocity = Vector2.zero;
@@ -182,10 +200,17 @@ public class Enemy : MonoBehaviour
         // GetComponent<Rigidbody2D>().excludeLayers |= PlayerLayer;
 
         dead = true;
-        // TODO:
-        // Play death animation here.
+        while(dead)
+        {
+            yield return null;
+        }
 
-        Destroy(gameObject, 0.5f);
+        Destroy(gameObject);
+    }
+
+    private void OnDeathAnimationFinished()
+    {
+        dead = false;
     }
 
     private void OnDrawGizmosSelected()

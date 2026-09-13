@@ -24,6 +24,8 @@ public class Player : MonoBehaviour
     public float FallGravity;
     public float JumpGravity;
 
+    public float FallSpeedMax = 5.0f;
+
     [Header("Dash variables")]
     public float DashSpeed = 12.0f;
     public float DashDuration = 0.15f;
@@ -71,6 +73,8 @@ public class Player : MonoBehaviour
     public bool Invulnerable = false;
 
     private bool Respawning = false;
+
+    private bool Dying = false;
 
     private bool Crouched = false;
 
@@ -137,11 +141,14 @@ public class Player : MonoBehaviour
                 HandleJump();
             }
         }
+
+        Rb.linearVelocity = new Vector2(Rb.linearVelocity.x, Mathf.Clamp(Rb.linearVelocity.y, 0.0f, FallSpeedMax));
     }
     void Update()
     {
         if(Respawning)
         {
+            HandleAnimations();
             return;
         }
 
@@ -298,6 +305,10 @@ public class Player : MonoBehaviour
             SetAnimationState("IsRunning", moving && Running);
             SetAnimationState("IsCrouched", IsGrounded && Crouched);
             SetAnimationState("IsShooting", Shooting);
+
+            SetAnimationState("IsFalling", Rb.linearVelocity.y < 0.1f);
+
+            Anim.SetBool("Dying", Dying);
         }
 
         // Anim.SetBool("IsDashing", IsDashing);
@@ -389,6 +400,11 @@ public class Player : MonoBehaviour
         Shooting = false;
     }
 
+    public void DyingAnimationFinished()
+    {
+        Dying = false;
+    }
+
     #endregion
 
     #region Coroutines
@@ -445,22 +461,12 @@ public class Player : MonoBehaviour
 
         float t = Time.time;
 
-        //move up
+        Dying = true;
+
+        while(Dying)
         {
-            float moveAmount = 0.5f;
-            float moveSpeed = 1.0f;
-
-            float nextY = transform.position.y + moveAmount;
-
-            while(transform.position.y != nextY)
-            {
-                float y = Mathf.MoveTowards(transform.position.y, nextY, moveSpeed * Time.deltaTime);
-
-                transform.position = new Vector3(transform.position.x, y, transform.position.z);
-                yield return null;
-            }
+            yield return null;
         }
-
 
         while(op.progress < 0.9f)
         {
@@ -468,11 +474,6 @@ public class Player : MonoBehaviour
         }
 
         float waitTime = Time.time - t;
-
-        if(waitTime < 2)
-        {
-            yield return new WaitForSeconds(2.0f - waitTime);
-        }
 
         Rb.bodyType = RigidbodyType2D.Dynamic;
         Respawning = false;

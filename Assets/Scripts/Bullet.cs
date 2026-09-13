@@ -13,21 +13,20 @@ public class Bullet : MonoBehaviour
 
     private bool Exploding = false;
 
+    public LayerMask Ground;
+
     public void SetDirection(bool right)
     {
         if(right)
         {
-            Vector3 angles = transform.localRotation.eulerAngles;
-            angles.y = 0.0f;
-            
-            transform.localEulerAngles = angles;
+            GetComponent<Rigidbody2D>().linearVelocity = Vector2.right * TravelSpeed;
+
+            GetComponentInChildren<SpriteRenderer>().flipX = false;
         }
         else
         {
-            Vector3 angles = transform.localRotation.eulerAngles;
-            angles.y = 180.0f;
-            
-            transform.localEulerAngles = angles;
+            GetComponent<Rigidbody2D>().linearVelocity = Vector2.left * TravelSpeed;
+            GetComponentInChildren<SpriteRenderer>().flipX = true;
         }
     }
 
@@ -41,8 +40,7 @@ public class Bullet : MonoBehaviour
 
         GetComponentInChildren<Hitbox>().OnHit.AddListener(() =>
         {
-            StopCoroutine(DestroyCoroutine);
-            Explode();
+            ExplodeNow();
         });
     }
 
@@ -63,13 +61,22 @@ public class Bullet : MonoBehaviour
         Explode();
     }
 
+    private void ExplodeNow()
+    {
+        StopCoroutine(DestroyCoroutine);
+        GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
+        Explode();
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(((1 << collision.collider.gameObject.layer) & Ground) != 0)
+        {
+            ExplodeNow();
+        }
+    }
+
     void Update()
     {
-        if(Exploding)
-        {
-            return;
-        }
-
-        transform.position += transform.right * TravelSpeed * Time.deltaTime;
     }
 }
