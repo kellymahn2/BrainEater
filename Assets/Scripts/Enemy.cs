@@ -83,14 +83,15 @@ public class Enemy : MonoBehaviour
             groundLayer
         );
         // Check for wall
-        IsWall = v;
+        IsWall = (v);
 
         // Check for ground in front of us
-        IsGrounded = Physics2D.OverlapCircle(
+        IsGrounded = Physics2D.Raycast(
             groundCheck.position,
+            Vector2.down,
             groundCheckDistance,
             groundLayer
-        ) != null;
+        );
 
         if (IsWall || !IsGrounded)
         {

@@ -32,15 +32,21 @@ public class MovingPlatform : MonoBehaviour
     [Tooltip("Positions to move to, Specified in deltas from the current position.")]
     public List<Vector2> Bounds;
     public int NextBound = 0;
+    [SerializeField]
     private int LastOffset = -1;
+
+    public float CurrentTime;
+    public float MixVal;
+
+    public Vector2 CurrentPos;
 
     private IEnumerator MovePlatform()
     {
-        float t = 0.0f;
+        CurrentTime = 0.0f;
 
         while(true)
         {
-            if(t >= 1.0f)
+            if(CurrentTime >= 1.0f)
             {
                 if(TraceBack)
                 {
@@ -64,21 +70,13 @@ public class MovingPlatform : MonoBehaviour
                     NextBound = (NextBound + 1) % (Bounds.Count);
                 }
 
-                t = 0.0f;
+                CurrentTime = 0.0f;
 
                 if(WaitTime > 0.0f)
                 {
                     yield return new WaitForSeconds(WaitTime);
                 }
             }
-
-            float len = (Vector2.Distance(Bounds[NextBound + LastOffset], Bounds[NextBound]));
-
-            float step = len > 0.0001f ? (Speed * Time.deltaTime) / len : 1.0f;
-
-            t += step;
-
-            float mixVal = ApplyEase(t);
 
             int fromIndex = NextBound + LastOffset;
             
@@ -89,18 +87,26 @@ public class MovingPlatform : MonoBehaviour
 
             int toIndex = NextBound;
 
-            transform.position = Vector2.Lerp(Bounds[fromIndex], Bounds[toIndex], mixVal);
+            float len = (Vector2.Distance(Bounds[fromIndex], Bounds[toIndex]));
+
+            float step = len > 0.0001f ? (Speed * Time.deltaTime) / len : 1.0f;
+
+            CurrentTime += step;
+
+            MixVal = ApplyEase(CurrentTime);
+            CurrentPos = Vector2.Lerp(Bounds[fromIndex], Bounds[toIndex], MixVal);
+            transform.localPosition = new Vector3(CurrentPos.x, CurrentPos.y, transform.localPosition.z);
             yield return null;
         }
     }
 
     void Start()
     {
-        Bounds.Insert(0, transform.position);
+        Bounds.Insert(0, transform.localPosition);
 
         for(int i = 1; i < Bounds.Count; ++i)
         {
-            Bounds[i] += (Vector2)transform.position;
+            Bounds[i] += (Vector2)transform.localPosition;
         }
 
         NextBound = 1;

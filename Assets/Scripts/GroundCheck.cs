@@ -19,6 +19,12 @@ public class GroundCheck : MonoBehaviour
 
     public bool CheckGrounded(LayerMask groundLayer)
     {
+        MovingPlatform isOnPlatform = gameObject.GetComponentInParent<MovingPlatform>();
+        if(isOnPlatform != null)
+        {
+            return IsGrounded = true;
+        }
+        
         Hit = Physics2D.BoxCast(GroundCheckTransform.position, BoxSize, 0.0f, -GroundCheckTransform.up, CastDistance, groundLayer);
 
         if(Hit.collider != null)

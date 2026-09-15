@@ -51,6 +51,7 @@ public class Bullet : MonoBehaviour
 
     private void Explode()
     {
+        GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
         Anim.enabled = true;
         Exploding = true;
     }
@@ -64,7 +65,6 @@ public class Bullet : MonoBehaviour
     private void ExplodeNow()
     {
         StopCoroutine(DestroyCoroutine);
-        GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
         Explode();
     }
 

@@ -512,11 +512,12 @@ MonoBehaviour:
   MoveSpeed: 5
   CrouchMoveSpeed: 2.5
   JumpForce: 20
+  PipeJumpForce: 30
   JumpCutMulitplier: 0.5
   NormalGravity: 4
   FallGravity: 5
   JumpGravity: 7
-  FallSpeedMax: 8
+  FallSpeedMax: 15
   DashSpeed: 12
   DashDuration: 0.15
   DashCooldown: 0.5
@@ -531,7 +532,10 @@ MonoBehaviour:
   Check: {fileID: 6070376884356828872}
   GroundLayerMask:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 520
+  PipeLayerMask:
+    serializedVersion: 2
+    m_Bits: 512
   IsGrounded: 1
   Money: 0
   Acceleration: 20

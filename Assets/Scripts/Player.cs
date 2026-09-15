@@ -19,6 +19,7 @@ public class Player : MonoBehaviour
     public float MoveSpeed = 2.0f;
     public float CrouchMoveSpeed = 1.0f;
     public float JumpForce = 5.0f;
+    public float PipeJumpForce = 8.0f;
     public float JumpCutMulitplier = 0.5f;
     public float NormalGravity;
     public float FallGravity;
@@ -52,6 +53,7 @@ public class Player : MonoBehaviour
     [Header("Ground checking")]
     public GroundCheck Check;
     public LayerMask GroundLayerMask;
+    public LayerMask PipeLayerMask;
     public bool IsGrounded = true;
 
     [SerializeField]
@@ -267,7 +269,9 @@ public class Player : MonoBehaviour
 
         if(JumpPressed && IsGrounded)
         {
-            Rb.linearVelocity = new Vector2(Rb.linearVelocity.x, JumpForce);
+            float force = Check.Hit.collider && (1 << Check.Hit.collider.gameObject.layer) == PipeLayerMask ? PipeJumpForce : JumpForce;
+                
+            Rb.linearVelocity = new Vector2(Rb.linearVelocity.x, force);
             JumpPressed = false;
             JumpReleased = false;
 
@@ -290,7 +294,7 @@ public class Player : MonoBehaviour
     }
     private void SetAnimationState(string name, bool state)
     {
-        Anim.SetBool(name, !Respawning && state);
+        Anim.SetBool(name, !Dying && !Respawning && state);
     }
     private void HandleAnimations()
     {
@@ -298,7 +302,7 @@ public class Player : MonoBehaviour
 
 
         {
-            SetAnimationState("IsJumping", Rb.linearVelocity.y > 0.1f);
+            SetAnimationState("IsJumping", !IsGrounded && Rb.linearVelocity.y > 0.1f);
             SetAnimationState("IsGrounded", IsGrounded);
             SetAnimationState("IsIdle", !Shooting && IsGrounded && !moving && !Crouched);
             SetAnimationState("IsWalking", moving && !Running);
@@ -306,7 +310,7 @@ public class Player : MonoBehaviour
             SetAnimationState("IsCrouched", IsGrounded && Crouched);
             SetAnimationState("IsShooting", Shooting);
 
-            SetAnimationState("IsFalling", Rb.linearVelocity.y < 0.1f);
+            SetAnimationState("IsFalling", !IsGrounded && Rb.linearVelocity.y < -0.1f);
 
             Anim.SetBool("Dying", Dying);
         }
@@ -402,7 +406,7 @@ public class Player : MonoBehaviour
 
     public void DyingAnimationFinished()
     {
-        Dying = false;
+        Respawning = false;
     }
 
     #endregion
@@ -453,17 +457,17 @@ public class Player : MonoBehaviour
         RigidbodyType2D oldType = Rb.bodyType;
         Rb.bodyType = RigidbodyType2D.Static;
 
-        Respawning = true;
-        
+
         AsyncOperation op = SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().name);
 
         op.allowSceneActivation = false;
 
         float t = Time.time;
 
+        Respawning = true;
         Dying = true;
 
-        while(Dying)
+        while(Respawning)
         {
             yield return null;
         }
@@ -472,11 +476,6 @@ public class Player : MonoBehaviour
         {
             yield return null;
         }
-
-        float waitTime = Time.time - t;
-
-        Rb.bodyType = RigidbodyType2D.Dynamic;
-        Respawning = false;
 
         op.allowSceneActivation = true;
     }
